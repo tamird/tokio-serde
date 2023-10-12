@@ -328,7 +328,6 @@ pub mod formats {
 
     use super::{Deserializer, Serializer};
     use bytes::{Bytes, BytesMut};
-    use educe::Educe;
     use serde::{Deserialize, Serialize};
     use std::{marker::PhantomData, pin::Pin};
 
@@ -340,18 +339,20 @@ pub mod formats {
 
         /// Bincode codec using [bincode](https://docs.rs/bincode) crate.
         #[cfg_attr(docsrs, doc(cfg(feature = "bincode")))]
-        #[derive(Educe)]
-        #[educe(Debug)]
         pub struct Bincode<Item, SinkItem, O = bincode_crate::DefaultOptions> {
-            #[educe(Debug(ignore))]
             options: O,
-            #[educe(Debug(ignore))]
             ghost: PhantomData<(Item, SinkItem)>,
+        }
+
+        impl<Item, SinkItem, O> std::fmt::Debug for Bincode<Item, SinkItem, O> {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                f.debug_struct(std::any::type_name::<Self>()).finish()
+            }
         }
 
         impl<Item, SinkItem> Default for Bincode<Item, SinkItem> {
             fn default() -> Self {
-                Bincode {
+                Self {
                     options: Default::default(),
                     ghost: PhantomData,
                 }
@@ -412,11 +413,20 @@ pub mod formats {
 
         /// JSON codec using [serde_json](https://docs.rs/serde_json) crate.
         #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
-        #[derive(Educe)]
-        #[educe(Debug, Default)]
         pub struct Json<Item, SinkItem> {
-            #[educe(Debug(ignore))]
             ghost: PhantomData<(Item, SinkItem)>,
+        }
+
+        impl<Item, SinkItem> std::fmt::Debug for Json<Item, SinkItem> {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                f.debug_struct(std::any::type_name::<Self>()).finish()
+            }
+        }
+
+        impl<Item, SinkItem> Default for Json<Item, SinkItem> {
+            fn default() -> Self {
+                Self { ghost: PhantomData }
+            }
         }
 
         #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
@@ -453,11 +463,20 @@ pub mod formats {
 
         /// MessagePack codec using [rmp-serde](https://docs.rs/rmp-serde) crate.
         #[cfg_attr(docsrs, doc(cfg(feature = "messagepack")))]
-        #[derive(Educe)]
-        #[educe(Debug, Default)]
         pub struct MessagePack<Item, SinkItem> {
-            #[educe(Debug(ignore))]
             ghost: PhantomData<(Item, SinkItem)>,
+        }
+
+        impl<Item, SinkItem> std::fmt::Debug for MessagePack<Item, SinkItem> {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                f.debug_struct(std::any::type_name::<Self>()).finish()
+            }
+        }
+
+        impl<Item, SinkItem> Default for MessagePack<Item, SinkItem> {
+            fn default() -> Self {
+                Self { ghost: PhantomData }
+            }
         }
 
         #[cfg_attr(docsrs, doc(cfg(feature = "messagepack")))]
@@ -496,11 +515,20 @@ pub mod formats {
 
         /// CBOR codec using [serde_cbor](https://docs.rs/serde_cbor) crate.
         #[cfg_attr(docsrs, doc(cfg(feature = "cbor")))]
-        #[derive(Educe)]
-        #[educe(Debug, Default)]
         pub struct Cbor<Item, SinkItem> {
-            #[educe(Debug(ignore))]
             _mkr: PhantomData<(Item, SinkItem)>,
+        }
+
+        impl<Item, SinkItem> std::fmt::Debug for Cbor<Item, SinkItem> {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                f.debug_struct(std::any::type_name::<Self>()).finish()
+            }
+        }
+
+        impl<Item, SinkItem> Default for Cbor<Item, SinkItem> {
+            fn default() -> Self {
+                Self { _mkr: PhantomData }
+            }
         }
 
         #[cfg_attr(docsrs, doc(cfg(feature = "cbor")))]
